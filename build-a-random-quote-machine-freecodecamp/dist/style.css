@@ -1,0 +1,12 @@
+#quote-box {
+  display: flex; 
+  justify-content: center;
+  flex-direction: column;
+  width: 300px;
+  margin: 0 auto;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+}
