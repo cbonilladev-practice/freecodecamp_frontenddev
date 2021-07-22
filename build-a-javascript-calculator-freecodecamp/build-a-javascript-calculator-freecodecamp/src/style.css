@@ -1,0 +1,48 @@
+.buttons {
+  display: flex;
+/*   flex-direction: column; */
+  flex-wrap: wrap;
+  width: 400px;
+}
+
+.clickable {
+  width: 100px;
+  height: 50px;
+}
+
+.operations {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 300px;
+  top: 10px;
+}
+
+#display, #answer {
+  height: 50px;
+  width: 275px;
+  background-color: whitesmoke;
+  margin: .5em;
+}
+
+button, input {
+  border: none;
+  text-decoration: none;
+  margin: 2px;
+  background-color: white;
+}
+
+button:hover, input:hover {
+  background-color: whitesmoke;
+}
+
+button {
+  display: flex;
+  justify-content: center;
+}
+
+#answer, #display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

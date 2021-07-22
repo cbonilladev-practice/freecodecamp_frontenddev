@@ -1,0 +1,54 @@
+.buttons {
+  display: flex;
+/*   flex-direction: column; */
+  flex-wrap: wrap;
+  width: 400px;
+  height: 20px;
+}  
+
+.calc {
+  display: flex;
+  justify-content: center;
+}
+
+.operations > * {
+  height: 50px;
+  width: 40px;
+}
+
+.clickable {
+  width: 100px;
+  height: 50px;
+}
+
+.operations {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 10px;
+  right: 40vw;
+}
+
+#display {
+  height: 50px;
+  width: 290px;
+  background-color: whitesmoke;
+  margin: .5em;
+}
+
+input {
+  border: none;
+  text-decoration: none;
+  margin: 2px;
+  background-color: white;
+}
+
+input:hover {
+  background-color: whitesmoke;
+}
+
+#display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
