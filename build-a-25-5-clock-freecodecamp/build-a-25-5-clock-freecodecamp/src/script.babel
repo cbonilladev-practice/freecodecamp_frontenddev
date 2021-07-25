@@ -1,0 +1,195 @@
+import * as React from "https://cdn.skypack.dev/react@17.0.1";
+import * as ReactDOM from "https://cdn.skypack.dev/react-dom@17.0.1";
+import * as reactCountdown from "https://cdn.skypack.dev/react-countdown@2.3.2";
+
+const Controls = (props) => {
+  const tickAway = () => {
+      const timer = setTimeout(() => {
+        props.setCurrentTime((prev) => prev - 1)
+      }, 1000)
+      return () => clearTimeout(timer)
+  }
+  
+  React.useEffect(() => {
+    if (props.isPlaying === true) {
+      if (props.sessionPlaying === true) {
+        {tickAway()}
+      } 
+    }
+  }, [props.isPlaying, tickAway])
+ 
+  React.useEffect(() => {
+    if (props.isPlaying === true) {
+      if (props.breakPlaying === true) {
+        {tickAway()}
+      } 
+    }
+  }, [props.breakPlaying, tickAway])
+  
+  const Reset = () => {
+    props.setSessionTime(props.sessionTime)
+    props.setBreakTime(props.breakTime)
+    props.setCurrentTime(props.sessionTime)
+    props.setSessionPlaying(true)
+    props.setBreakPlaying(false)
+    props.setIsPlaying(false)
+  }
+  
+  return (
+    <div className="Controls">
+      { props.isPlaying ? <img id="start_stop" onClick={props.doTimer}          src="https://image.flaticon.com/icons/png/512/151/151859.png"/>
+      : <img id="start_stop" onClick={props.doTimer} src="https://image.flaticon.com/icons/png/512/27/27223.png"/> }
+      <img id="reset" src="https://image.flaticon.com/icons/png/512/44/44650.png" onClick={Reset}/>
+    </div>
+  )
+}
+
+const Countdown = (props) => {
+  return (
+    <div className="Countdown">
+      <span id="timer-label">{props.sessionPlaying ? 'session left:' : 'break left:'}</span>
+      <h2 id="time-left">{props.properTime(props.currentTime)}</h2>
+    </div>
+  )
+}
+
+const SessionTimer = (props) => {
+    const changeSessionTimer = (e) => {
+      switch(e.target.value) {
+      case "-":
+        if (props.sessionTime === "01:00") {
+          break;
+        }
+        props.setSessionTime((prev) => prev - 60)
+        props.setCurrentTime((prev) => prev - 60)
+        break;
+      case "+":
+        props.setSessionTime((prev) => prev + 60)
+        props.setCurrentTime((prev) => prev + 60)
+        break;
+    }
+  }
+
+  return (
+    <div className="SessionTimer">
+      <input id="session-decrement" type="button" value="-" onClick={(e) => changeSessionTimer(e)} className="session-controls" src="https://image.flaticon.com/icons/png/512/56/56889.png"></input>
+      <span id="session-label">session time:</span> 
+      <h2 id="session-length">{+(props.sessionTime).slice(0, -3)}</h2>
+      <input id="session-increment" type="button" value="+" onClick={(e) => changeSessionTimer(e)} className="session-controls" src="https://image.flaticon.com/icons/png/512/1237/1237946.png"></input>
+      </div>
+  )
+}
+
+const BreakTimer = (props) => {
+  const changeBreakTimer = (e) => {
+      switch(e.target.value) {
+      case "-":
+          if (props.breakTime === "01:00") {
+            break;
+          }
+        props.setBreakTime((prev) => prev - 60)
+        break;
+      case "+":
+        props.setBreakTime((prev) => prev + 60)
+        break;
+    }
+  }
+  
+  return (
+    <div className="BreakTimer">
+      <input id="break-decrement" type="button" value="-" onClick={(e) => changeBreakTimer(e)} className="session-controls" src="https://image.flaticon.com/icons/png/512/56/56889.png"></input>
+      <span id="break-label">break time:</span>
+      <h2 id="break-length">{+(props.breakTime).slice(0, -3)}</h2>
+       <input id="break-increment" type="button" value="+" onClick={(e) => changeBreakTimer(e)} className="session-controls" src="https://image.flaticon.com/icons/png/512/56/56889.png"></input>
+      </div>
+  )
+}
+
+const App = () => {
+  const [sessionTime, setSessionTime] = React.useState(25 * 60)
+  const [breakTime, setBreakTime] = React.useState(5 * 60)
+  const [currentTime, setCurrentTime] = React.useState(sessionTime)
+  const [isPlaying, setIsPlaying] = React.useState(false)
+  const [sessionPlaying, setSessionPlaying] = React.useState(true)
+  const [breakPlaying, setBreakPlaying] = React.useState(false)
+  const [playAudio, setPlayAudio] = React.useState(new Audio("https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"))
+  
+  const triggerAudio = () => {
+    playAudio.currentTime = 0;
+    playAudio.play()
+  }
+  
+  if (currentTime===0) {
+    if (sessionPlaying === true) {
+      setSessionPlaying(false)
+      setBreakPlaying(true)
+      setCurrentTime(breakTime)
+      triggerAudio()
+    } else {
+      setSessionPlaying(true)
+      setBreakPlaying(false)
+      setCurrentTime(sessionTime)
+      triggerAudio()
+    }
+  }
+  
+  const properTime = (time) => {
+    let minutes = Math.floor(time / 60)
+    let seconds = time % 60
+    return (
+      (minutes < 10 ? "0" + minutes : minutes) + 
+      ":" + 
+      (seconds < 10 ? "0" + seconds : seconds) 
+    )
+  }
+  
+  const doTimer = () => {
+    setIsPlaying(!isPlaying)
+  }
+  
+  return (
+    <div className="TimerComplete">
+    <h2>pomodoro timer</h2>
+      <div className="Timers">
+    <SessionTimer 
+      sessionTime={(properTime(sessionTime))} 
+      setSessionTime={setSessionTime}
+      currentTime={(properTime(currentTime))}
+      setCurrentTime={setCurrentTime}
+    />
+    <BreakTimer
+      breakTime={properTime(breakTime)}
+      setBreakTime={setBreakTime}
+      />
+      </div>
+    <Countdown
+      properTime={properTime}
+      currentTime={currentTime}
+      sessionTime={sessionTime}
+      setSessionTime={setSessionTime}
+      breakTime={breakTime}
+      setBreakTime={setBreakTime}
+      sessionPlaying={sessionPlaying}
+      setSessionPlaying={setSessionPlaying}
+      breakPlaying={breakPlaying}
+      setBreakPlaying={setBreakPlaying}
+      />
+    <Controls
+      isPlaying={isPlaying}
+      setIsPlaying={setIsPlaying}
+      sessionPlaying={sessionPlaying}
+      breakPlaying={breakPlaying}
+      breakTime={breakTime}
+      setBreakTime={setBreakTime}
+      setSessionTime={setSessionTime}
+      doTimer={doTimer}
+      setCurrentTime={setCurrentTime}
+      sessionTime={sessionTime}
+      setSessionPlaying={setSessionPlaying}
+      setBreakPlaying={setBreakPlaying}
+      />
+      </div>
+    )
+}
+
+ReactDOM.render(<App/>, document.getElementById("root"))
